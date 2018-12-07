@@ -14,3 +14,8 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('trip/{id?}', 'TripsController@map')->name('trip.map');
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
