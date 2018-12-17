@@ -15,12 +15,17 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('trip/{id?}', 'TripsController@map')->name('trip.map');
-Route::get('trips', 'TripsController@index')->name('trip.index');
-Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Auth::routes(['register'=>false]);
 
-Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::middleware('auth')->group(function(){
+
+    Route::get('/home', 'HomeController@index')->name('home');
+
+    Route::get('trip/{id?}', 'TripsController@map')->name('trip.map');
+    Route::get('trips', 'TripsController@index')->name('trip.index');
+
+    Route::get('stats', 'StatsController@index')->name('stats.index');
+
+});

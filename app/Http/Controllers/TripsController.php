@@ -7,8 +7,12 @@ use Illuminate\Http\Request;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\ServiceAccount;
 
-class TripsController extends Controller
+class TripsController extends AuthController
 {
+    public function __construct() {
+        parent::__construct();
+    }
+
     public function map($id = null){
 
         return view('trips.map')->with([
