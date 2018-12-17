@@ -11,6 +11,6 @@ class StatsController extends AuthController
     }
 
     public function index(){
-
+        return view('stats.index');
     }
 }

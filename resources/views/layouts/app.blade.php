@@ -37,10 +37,10 @@
                             <a class="nav-link" href="{{ route('stats.index') }}">{{ __('Statistics') }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="">{{ __('Alerts') }}</a>
+                            <a class="nav-link" href="{{ route('alerts.index') }}">{{ __('Alerts') }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="">{{ __('Reports') }}</a>
+                            <a class="nav-link" href="{{ route('reports.index') }}">{{ __('Reports') }}</a>
                         </li>
                     </ul>
 

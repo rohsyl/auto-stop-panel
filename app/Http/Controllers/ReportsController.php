@@ -10,4 +10,8 @@ class ReportsController extends AuthController
         parent::__construct();
     }
 
+    public function index(){
+
+        return view('reports.index');
+    }
 }

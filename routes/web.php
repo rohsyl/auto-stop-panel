@@ -28,4 +28,9 @@ Route::middleware('auth')->group(function(){
 
     Route::get('stats', 'StatsController@index')->name('stats.index');
 
+    Route::get('reports', 'ReportsController@index')->name('reports.index');
+
+    Route::get('alerts', 'AlertsController@index')->name('alerts.index');
+
+
 });
