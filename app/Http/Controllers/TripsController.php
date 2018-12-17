@@ -38,5 +38,6 @@ class TripsController extends Controller
 
         print_r($trips);
         die();
+
     }
 }
