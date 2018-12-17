@@ -16,6 +16,7 @@ Route::get('/', function () {
 });
 
 Route::get('trip/{id?}', 'TripsController@map')->name('trip.map');
+Route::get('trips', 'TripsController@index')->name('trip.index');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

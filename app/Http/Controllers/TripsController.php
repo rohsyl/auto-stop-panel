@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Firebase\FirebaseUtils;
 use Illuminate\Http\Request;
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\ServiceAccount;
 
 class TripsController extends Controller
 {
-    //
-
     public function map($id = null){
 
         return view('trips.map')->with([
@@ -22,6 +23,20 @@ class TripsController extends Controller
                 'messagingSenderId' => config('autostop.google.firebase.messagingSenderId'),
             ],
         ]);
+    }
 
+    public function index(){
+
+        $firebase = FirebaseUtils::get();
+
+        $database = $firebase->getDatabase();
+
+        $references = $database
+            ->getReference('trips');
+
+        $trips = $references->getValue();
+
+        print_r($trips);
+        die();
     }
 }
