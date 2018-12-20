@@ -81,6 +81,7 @@
         </nav>
 
         <main>
+            <br />
             @yield('content')
         </main>
     </div>
