@@ -29,6 +29,8 @@ Route::middleware('auth')->group(function(){
     Route::get('stats', 'StatsController@index')->name('stats.index');
 
     Route::get('reports', 'ReportsController@index')->name('reports.index');
+    Route::get('reports/{id}', 'ReportsController@details')->name('reports.details');
+    Route::get('reports/{id}/read', 'ReportsController@read')->name('reports.readed');
 
     Route::get('alerts', 'AlertsController@index')->name('alerts.index');
     Route::get('alerts/{id}', 'AlertsController@details')->name('alerts.details');
