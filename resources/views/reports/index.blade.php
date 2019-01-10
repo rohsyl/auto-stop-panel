@@ -9,14 +9,19 @@
                 <th>{{ __('Plate Nr.') }}</th>
                 <th>{{ __('Date') }}</th>
                 <th></th>
+                <th>{{ __('Flag the plate') }}</th>
+                <th></th>
             </tr>
 
             @foreach($newReports as $id => $report)
                 <tr>
                     <td>{{ $report['plateNumber'] }}</td>
-                    <td>{{ \Carbon\Carbon::createFromTimestamp($report['timestamp'])->format('Y-m-d H:i:s') }}</td>
+                    <td>{{ $report['timestamp'] }}</td>
                     <td>
                         <a href="{{ route('reports.details', ['id' => $id]) }}" class="btn btn-sm btn-dark">{{ __('See details') }}</a>
+                    </td>
+                    <td>
+                        <a href="{{ route('reports.flaged', ['id' =>  $report['plateNumber']]) }}" class="btn btn-sm btn-danger">{{ __('Flag') }}</a>
                     </td>
                 </tr>
             @endforeach
@@ -32,14 +37,18 @@
                 <th>{{ __('Plate Nr.') }}</th>
                 <th>{{ __('Date') }}</th>
                 <th></th>
+                <th>{{ __('Flag the plate') }}</th>
             </tr>
 
             @foreach($readedReports as $id => $report)
                 <tr>
                     <td>{{ $report['plateNumber'] }}</td>
-                    <td>{{ \Carbon\Carbon::createFromTimestamp($report['timestamp'])->format('Y-m-d H:i:s') }}</td>
+                    <td></td>
                     <td>
                         <a href="{{ route('reports.details', ['id' => $id]) }}" class="btn btn-sm btn-dark">{{ __('See details') }}</a>
+                    </td>
+                    <td>
+                        <a href="{{ route('reports.flaged', ['id' =>  $report['plateNumber']]) }}" class="btn btn-sm btn-danger">{{ __('Flag') }}</a>
                     </td>
                 </tr>
             @endforeach

@@ -42,6 +42,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('reports.index') }}">{{ __('Reports') }}</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('flag.index') }}">{{ __('Flaged plates') }}</a>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->

@@ -36,5 +36,10 @@ Route::middleware('auth')->group(function(){
     Route::get('alerts/{id}', 'AlertsController@details')->name('alerts.details');
     Route::get('alerts/{id}/read', 'AlertsController@read')->name('alerts.readed');
 
+    Route::get('flag', 'FlagController@index')->name('flag.index');
+    Route::get('reports/{id}/flag', 'FlagController@flag')->name('reports.flaged');
+    Route::get('alerts/{id}/flag', 'FlagController@flag')->name('alerts.flaged');
+    Route::get('flag/{id}/unflag', 'FlagController@unflag')->name('flag.unflaged');
+
 
 });
