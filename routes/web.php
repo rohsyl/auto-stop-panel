@@ -38,7 +38,7 @@ Route::middleware('auth')->group(function(){
 
     Route::get('flag', 'FlagController@index')->name('flag.index');
     Route::get('reports/{id}/flag', 'FlagController@flag')->name('reports.flaged');
-    Route::get('alerts/{id}/flag', 'FlagController@flag')->name('alerts.flaged');
+    Route::get('flag/{id}/flagFromTrip', 'FlagController@flagFromTrip')->name('alerts.flaged');
     Route::get('flag/{id}/unflag', 'FlagController@unflag')->name('flag.unflaged');
 
 

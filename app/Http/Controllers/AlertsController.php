@@ -86,5 +86,9 @@ class AlertsController extends AuthController
         $references = $database->getReference('persons/'.$alert['trip']['ownerUid']);
 
         $alert['trip']['owner'] = $references->getValue();
+
     }
+
+
+
 }
