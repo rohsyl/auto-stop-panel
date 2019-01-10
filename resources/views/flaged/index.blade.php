@@ -9,16 +9,15 @@
                 <th>{{ __('Plate Nr.') }}</th>
                 <th>{{ __('Unflag plate') }}</th>
             </tr>
-
-            @foreach($flagedPlates as $id => $plate)
+            @foreach($flagedPlates as  $id => $plate)
                 <tr>
 
                     <td>
-                        {{$id}}
+                        {{ isset($plate['plateNumber']) ?  $plate['plateNumber'] : '' }}
                     </td>
                     <td>
                         <a href="{{ route('flag.unflaged', ['id' =>  $id]) }}" class="btn btn-sm btn-success">{{ __('Unflag') }}</a>
-                    </td>
+                   </td>
                 </tr>
             @endforeach
         </table>

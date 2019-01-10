@@ -6,6 +6,8 @@
         <hr />
 
         <a href="{{ route('reports.readed', ['id' => $id]) }}" class="btn btn-warning">{{ __('Mark as read') }}</a>
+        <a href="{{ route('trip.map', ['id' => $report['tripUid']]) }}" class="btn btn-success">{{ __('See trip path') }}</a>
+
 
         <hr />
 

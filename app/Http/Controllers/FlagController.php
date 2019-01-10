@@ -23,15 +23,13 @@ class FlagController extends AuthController
 
         $flagedPlates = [];
 
-        info($plates);
-
         foreach ($plates as $id => $plate){
-            //Plante car toutes les plaques n'ont pas de valeur flaged
-            //if($plate['flaged']){
+
+            if(isset($plate['flaged']) && $plate['flaged']){
                 $flagedPlates[$id] = $plate;
-            //}
+            }
         }
-        info($flagedPlates);
+
         return view('flaged.index')->with([
             'flagedPlates' => $flagedPlates,
         ]);
@@ -73,6 +71,34 @@ class FlagController extends AuthController
 
         $plate = $references->getValue();
         $plate['flaged'] = false;
+        $references->set($plate);
+
+        return redirect()->route('flag.index');
+    }
+
+
+    public function flagFromTrip($id){
+
+        $firebase = FirebaseUtils::get();
+
+        $database = $firebase->getDatabase();
+
+        $references = $database->getReference('trips/'.$id);
+        $trip = $references->getValue();
+
+        //if trip with no plate we don't do anything
+        if(!isset($plate['flaged'])){
+            return redirect()->route('alerts.index');
+        }
+
+        $plateUid = $trip['plateUid'];
+        info($plateUid);
+        $references = $database->getReference('plates/'.$plateUid);
+        $plate = $references->getValue();
+        info($plate);
+
+        $plate['flaged'] = true;
+        info($plate);
         $references->set($plate);
 
         return redirect()->route('flag.index');
