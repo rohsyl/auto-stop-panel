@@ -24,7 +24,7 @@ class ReportsController extends AuthController
 
         $readedReports = [];
         $newReports = [];
-
+        info($reports);
         foreach ($reports as $id => $report){
             if($report['readByAdmin']){
                 $readedReports[$id] = $report;
@@ -67,10 +67,10 @@ class ReportsController extends AuthController
         $references = $database->getReference('reports/'.$id);
 
         $report = $references->getValue();
-
+        info($report);
         $report['readDate'] = Carbon::now()->timestamp;
         $report['readByAdmin'] = true;
-
+        info($report);
         $references->set($report);
 
         return redirect()->route('reports.index');
