@@ -50,9 +50,9 @@ class AlertsController extends AuthController
 
         $alert = $references->getValue();
 
-        $references = $database->getReference('trips/'.$alert['tripUid']);
+        $this->fillAlertDetails($database, $alert);
 
-        $alert['trip'] = $references->getValue();
+
 
         return view('alerts.details')->with([
             'alert' => $alert,
@@ -76,5 +76,15 @@ class AlertsController extends AuthController
         $references->set($alert);
 
         return redirect()->route('alerts.index');
+    }
+
+    private function fillAlertDetails($database, &$alert){
+        $references = $database->getReference('trips/'.$alert['tripUid']);
+
+        $alert['trip'] = $references->getValue();
+
+        $references = $database->getReference('persons/'.$alert['trip']['ownerUid']);
+
+        $alert['trip']['owner'] = $references->getValue();
     }
 }

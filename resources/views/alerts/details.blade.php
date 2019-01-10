@@ -9,8 +9,45 @@
 
         <hr />
 
-<pre>
-{{ print_r($alert) }}
-</pre>
+        <div class="row">
+            <div class="col">    <h3>Trip details</h3>
+                <dl class="dl-horizontal">
+                    <dt>Trip uid</dt>
+                    <dd>{{ $alert['tripUid'] }}</dd>
+
+                    <dt>Last known position</dt>
+                    <dd><a href="http://maps.google.com/maps?q={{ $alert['lastPosition']['latitude'] }},{{ $alert['lastPosition']['longitude'] }}" target="_blank">Show in google maps</a></dd>
+
+
+                    <dt>Trip destination</dt>
+                    <dd><a href="http://maps.google.com/maps?q={{ $alert['trip']['destination']['latitude'] }},{{ $alert['trip']['destination']['longitude'] }}" target="_blank">{{ $alert['trip']['destination']['name'] }}</a></dd>
+
+                    <dt>Trip status</dt>
+                    <dd>{{ $alert['trip']['status'] }}</dd>
+
+                </dl>
+            </div>
+            <div class="col"> <h3>Owner details</h3>
+                <dl>
+                    <dt>Owner uid</dt>
+                    <dd>{{ $alert['trip']['ownerUid'] }}</dd>
+
+                    <dt>Fullname</dt>
+                    <dd>{{ $alert['trip']['owner']['sex'] == 0 ? 'Mr.' : 'Ms.' }} {{ $alert['trip']['owner']['fullname'] }}</dd>
+
+                    <dt>E-mail</dt>
+                    <dd>{{ $alert['trip']['owner']['email'] }}</dd>
+
+                    <dt>Emergency E-mail</dt>
+                    <dd>{{ $alert['trip']['owner']['emergencyEmail'] }}</dd>
+
+                    <dt>Emergency Phone</dt>
+                    <dd>{{ $alert['trip']['owner']['emergencyPhone'] }}</dd>
+
+                </dl>
+            </div>
+        </div>
+
+
     </div>
 @endsection
