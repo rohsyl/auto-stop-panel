@@ -7,7 +7,7 @@
 
         <a href="{{ route('alerts.readed', ['id' => $id]) }}" class="btn btn-warning">{{ __('Mark as read') }}</a>
         <a href="{{ route('trip.map', ['id' => $alert['tripUid']]) }}" class="btn btn-success">{{ __('See trip path') }}</a>
-        <a href="{{ route('alerts.flaged', ['id' => $alert['tripUid']]) }}" class="btn btn-danger">{{ __('Flag de plate') }}</a>
+        <a href="{{ route('alerts.flaged', ['id' => $alert['tripUid']]) }}" class="btn btn-danger">{{ __('Flag the plate') }}</a>
 
         <hr />
 
