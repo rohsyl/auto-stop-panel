@@ -6,48 +6,61 @@ use Illuminate\Http\Request;
 use App\Firebase\FirebaseUtils;
 use Illuminate\Support\Facades\Storage;
 
+// This controller computes statistics related to the use of the Potostop app.
+// It does so by downloading the whole Firebase JSON tree and analyzing it to compute the stats.
+// Since the statistics are long to generate (about 12 seconds and counting), a caching system
+// refreshes the stats only if they don't exist in the cache or if they are more than 48 hours old.
 class StatsController extends AuthController
 {
+    // Constructing the controller
     public function __construct() {
         parent::__construct();
     }
 
+    // The index page computes the statistics if necessary and displays them
     public function index()
     {
-        $firebase = FirebaseUtils::get();
-        $db = $firebase->getDatabase();
-
-        $root_ref = $db->getReference()->getSnapshot()->getValue();
-
-        // Trips that are not finished are removed from the dataset
-        foreach( $root_ref['trips'] as $tripId => $trip )
-        {
-            if ( $trip['status'] != 'finished')
-            {
-                unset( $root_ref['trips'][$tripId] );
-            }
-        }
-
         // The stats will be two days old at worst
         $stats_cachefile = 'cached_stats.ser';
         $stats_ttl = 2 * (24*60*60);
         $refresh_stats = true;
         $stats = [];
 
+        // If the stats exist in the cache...
         if ( Storage::disk('local')->exists( $stats_cachefile ) )
         {
+            // ... they are unserialized
             $cached_stats = unserialize( Storage::disk('local')->get( $stats_cachefile ) );
 
-            // We keep the cached state if we are not beyond the TTL
+            // If the cached stats are up-to-date enough,
             if ( time() - $cached_stats['timestamp'] < $stats_ttl )
             {
+                // they are kept and we don't need to refresh the stats
                 $stats = $cached_stats;
                 $refresh_stats = false;
             }
         }
 
+        // If the stats need to be refreshed, they are downloaded again from Firebase
         if ( $refresh_stats )
         {
+            // Getting a Firebase reference
+            $firebase = FirebaseUtils::get();
+            $db = $firebase->getDatabase();
+
+            // Getting the whole JSON tree from Firebase
+            $root_ref = $db->getReference()->getSnapshot()->getValue();
+
+            // Trips that are not finished are removed from the dataset
+            foreach( $root_ref['trips'] as $tripId => $trip )
+            {
+                if ( $trip['status'] != 'finished')
+                {
+                    unset( $root_ref['trips'][$tripId] );
+                }
+            }
+
+            // The stats are computed using the JSON tree and the controller's methods
             $stats = [
                 'timestamp' => time(),
                 'total_trips' => $this->getTotalTrips( $root_ref ),
@@ -59,14 +72,15 @@ class StatsController extends AuthController
                 'total_person_km' => $this->getTotalPersonKm( $root_ref )
             ];
 
+            // Once the stats were recomputed, we save them in the cache for later use
             Storage::disk('local')->put( $stats_cachefile, serialize($stats) );
         }
 
-
+        // The stats are sent to the statistics view
         return view('stats.index')->with( $stats );
     }
 
-
+    // Returns the total number of trips found in the database
     private function getTotalTrips( $root_ref )
     {
         if ( !is_array($root_ref) ) return 0;
@@ -74,7 +88,7 @@ class StatsController extends AuthController
         return (array_key_exists('trips', $root_ref) ? count( $root_ref['trips'] ) : 0);
     }
 
-
+    // Returns the total number of persons (aka passengers) found in the database
     private function getTotalPersons( $root_ref )
     {
         if ( !is_array($root_ref) ) return 0;
@@ -83,6 +97,7 @@ class StatsController extends AuthController
     }
 
 
+    // Returns the total number of plates (aka drivers) found in the database
     // Approximately equal to the number of drivers
     private function getTotalPlates( $root_ref )
     {
@@ -91,10 +106,11 @@ class StatsController extends AuthController
         return (array_key_exists('plates', $root_ref) ? count( $root_ref['plates'] ) : 0);
     }
 
+    // Returns the average number of trips per person
     // Persons who are registered but who never traveled with the app are NOT counted
     private function getAverageTripsPerPerson( $root_ref )
     {
-        if ( !is_array($root_ref) ) return 0;
+        if ( !is_array($root_ref) || !isset($root_ref['trips']) ) return 0;
 
         $total_trips_per_person = [];
 
@@ -109,10 +125,10 @@ class StatsController extends AuthController
         return array_sum( $total_trips_per_person ) / count( $total_trips_per_person );
     }
 
-    // Seuls sont comptés les voyages qui sont explicitement liés à une plaque
+    // Only trips that are explicitly linked to a plate (plateUid property) are counted
     private function getAverageTripsPerPlate( $root_ref )
     {
-        if ( !is_array($root_ref) ) return 0;
+        if ( !is_array($root_ref) || !isset($root_ref['trips']) ) return 0;
 
         $total_trips_per_plate = [];
 
@@ -135,6 +151,11 @@ class StatsController extends AuthController
     // If the rate is 0.0, all trips were bad
     private function getSatisfactionRate( $root_ref )
     {
+        if ( !is_array($root_ref)
+            || !isset($root_ref['trips'])
+            || !isset($root_ref['reports'])
+        ) return 0.0;
+
         // Since there is one report per bad trip, the number of reports is equal to
         // the number of bad trips
         $bad_trips = count( $root_ref['reports']);
@@ -147,9 +168,12 @@ class StatsController extends AuthController
         return $satisfaction_rate;
     }
 
+    // Returns the total number of traveled kilometers for all passengers
     // Trips that have less than two GPS positions are ignored
     private function getTotalPersonKm( $root_ref )
     {
+        if ( !is_array($root_ref) || !isset($root_ref['trips']) ) return 0;
+
         $total_person_km = 0;
 
         foreach ($root_ref['trips'] as $trip )
@@ -177,7 +201,9 @@ class StatsController extends AuthController
         return $total_person_km;
     }
 
-
+    // Returns the distance between two GPS positions using Google's Distance Matrix API
+    // Positions are 2-cells array (0 for latitude, 1 for longitude)
+    // A. Cotting idea: manually compute the distances between all GPS positions of a trip (possible to use a GPX file and a library?)
     private function dist($from, $to)
     {
         // We make sure all parameters are 2-element arrays
@@ -226,48 +252,16 @@ class StatsController extends AuthController
         if ( is_null($json_object) )
             return NAN;
 
-        if ( isset($json_object['rows']['0']['elements']['0']['distance']['value']) )
+
+        if ( isset($json_object['rows'][0]['elements'][0]['distance']['value']) )
         {
-            return intval( $json_object['rows']['0']['elements']['0']['distance']['value'] );
+            return intval( $json_object['rows'][0]['elements'][0]['distance']['value'] );
         }
 
         else
         {
-            // return 0;
+            // return 0; // If the API didn't reply, we return 0
             return rand(10,100); // For testing only!
         }
     }
-
-    // OK Le nombre de trajets total réalisés => number of trips
-
-    // NOPE Le nombre de personnes transportées => impossible à obtenir sans identifier chaque personne.
-        // (chaque personne aura son propre trip même si elles prennent le même véhicule)
-        // Si plusieurs passagers, risque de compter plusieurs fois la même personne:
-        // 2 personnes, chacune saisit 2 dans nombre de personnes
-        // => 2 personne => 2 trips différents => 2 * 2 personnes => 4 personnes !
-        // À la rigueur OK si une personne seulement utilise l'app pour tout le monde, mais besoin de
-        // discipline côté utilisateur et impossible à garantir. Et moins de sécurités car moins de
-        // passagers identifiés par nom, prénom etc.
-
-    // OK Le nombre total de « km-personne » réalisés => SUM(distance_voyage * nb_personnes_voyage)
-        // distance_voyage => dist(1st position, destination) !! Peut être faux si arrêt avant arrivée !
-        // distance_voyage => dist(1st position, last_position) ! plus précis et pas trop intensif niveau calcul
-        // distance_voyage => dist(1st position, 2nd_position) + dist(2nd position, 3rd position) etc. Heavy to compute? More precise though
-
-    // OK Le nombre d'utilisateurs de l'application auto-stoppeurs => number of person entities
-    // OK Le nombre de trajets moyens par auto-stoppeur AVG( trips_by_person )
-        // trips_by_person => count trips where ownerUid = xXXXX
-
-    // OK Le nombre d'utilisateurs de l'application automobilistes => number_of_plates (davantage un nombre de véhicules que d'utilisateurs)
-    // OK Le nombre de trajet moyens réalisés par automobilistes AVG( trips_by_plates )
-        // trips_by_plate => count trips where plate = xXXXX
-
-    // OK Le taux de satisfaction (trajets ok VS trajets pas ok)
-        // trajets_ok = counf_of_trips where trip.plate.reports => null
-        // trajets_PAS_ok = counf_of_trips where trip.plate.reports != null
-
-
-
-    // NOPE Le détail des alertes (toutes information sur les trajets qui ont généré une alerte)
-    // vague... partie de Gaétan?
 }
