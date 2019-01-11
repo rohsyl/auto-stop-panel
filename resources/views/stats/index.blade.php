@@ -2,6 +2,7 @@
 
 @section('content')
 
+    <!-- Statistics styling -->
     <style type="text/css">
 
         .potostop-stats-wrapper
@@ -94,8 +95,10 @@
 
         <h1>Potostop usage statistics</h1>
 
+        <!-- Satisfaction rate pie chart -->
         <canvas id="satisfaction_piechart" width="300" height="300"></canvas>
 
+        <!-- Pie chart legends -->
         <div class="satisfaction-rate">
             <span class="bad">
                 <strong>
@@ -113,6 +116,7 @@
             </span>
         </div>
 
+        <!-- Satisfaction pie chart generation -->
         <script type="text/javascript">
             var c = document.getElementById('satisfaction_piechart');
             var satisfaction_rate = {{$satisfaction_rate}}; // Value set dynamically by PHP
@@ -126,16 +130,16 @@
                 var radius = 0.9 * (c.width/2);
 
 
+                // Coloring the good trips
                 ctx.beginPath();
-
                 ctx.arc(x, y, radius, -Math.PI/2, -Math.PI/2 + satisfaction_rate * (2*Math.PI), false);
                 ctx.lineTo(x, y);
                 ctx.closePath();
                 ctx.fillStyle = '#0a5';
                 ctx.fill();
 
+                // Coloring the bad trips
                 ctx.beginPath();
-
                 ctx.arc(x, y, radius, -Math.PI/2, -Math.PI/2 + satisfaction_rate * (2*Math.PI), true);
                 ctx.lineTo(x, y);
                 ctx.closePath();
@@ -146,34 +150,34 @@
         </script>
 
 
-
+        <!-- Computed statistics -->
         <table class="potostop-stats">
             <tr>
 
                 <td>
                     {{$total_trips}}
                 </td>
-                <th>voyages</th>
+                <th>trips</th>
             </tr>
             <tr>
                 <td>{{$total_persons}}</td>
-                <th>passagers</th>
+                <th>passengers</th>
             </tr>
             <tr>
                 <td>{{$total_plates}}</td>
-                <th>conducteurs</th>
+                <th>drivers</th>
             </tr>
             <tr>
                 <td>{{$avg_trips_per_person}}</td>
-                <th>voyages par passager (en moyenne)</th>
+                <th>trips by passenger (average)</th>
             </tr>
             <tr>
                 <td>{{$avg_trips_per_plate}}</td>
-                <th>voyages par conducteur (en moyenne)</th>
+                <th>trips by driver (average)</th>
             </tr>
             <tr>
                 <td>{{$total_person_km}} km</td>
-                <th>parcourus par chaque passager</th>
+                <th>traveled by all passengers</th>
             </tr>
         </table>
     </div>
