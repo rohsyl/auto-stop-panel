@@ -20,7 +20,7 @@ class ReportsController extends AuthController
 
         $references = $database->getReference('reports');
 
-        $reports = $references->getValue();
+        $reports = array_reverse($references->getValue());
 
         $readedReports = [];
         $newReports = [];

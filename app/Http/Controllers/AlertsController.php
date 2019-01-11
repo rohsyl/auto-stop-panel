@@ -29,7 +29,7 @@ class AlertsController extends AuthController
         $firebase = FirebaseUtils::get();
         $database = $firebase->getDatabase();
         $references = $database->getReference('alerts');
-        $alerts = $references->getValue();
+        $alerts = array_reverse($references->getValue());
 
         $readedAlerts = [];
         $newAlerts = [];
