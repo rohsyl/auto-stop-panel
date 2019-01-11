@@ -12,10 +12,13 @@
         <hr />
 
         <div class="row">
-            <div class="col">    <h3>Trip details</h3>
+            <div class="col">    <h3>Report and Trip details</h3>
                 <dl class="dl-horizontal">
                     <dt>Trip uid</dt>
                     <dd>{{ $report['tripUid'] }}</dd>
+
+                    <dt>Date</dt>
+                    <dd>{{ \Carbon\Carbon::createFromTimestampMs($report['timestamp'])->format('d M Y H:i:s') }}</dd>
 
                     <dt>Plate Number</dt>
                     <dd>{{ $report['plateNumber'] }}</dd>
