@@ -9,19 +9,16 @@
                 <th>{{ __('Plate Nr.') }}</th>
                 <th>{{ __('Date') }}</th>
                 <th></th>
-                <th>{{ __('Flag the plate') }}</th>
-                <th></th>
             </tr>
 
             @foreach($newReports as $id => $report)
                 <tr>
                     <td>{{ $report['plateNumber'] }}</td>
-                    <td>{{ $report['timestamp'] }}</td>
+
+                    <td>{{ \Carbon\Carbon::createFromTimestampMs($report['timestamp'])->format('d M Y H:i:s') }}</td>
                     <td>
                         <a href="{{ route('reports.details', ['id' => $id]) }}" class="btn btn-sm btn-dark">{{ __('See details') }}</a>
-                    </td>
-                    <td>
-                        <a href="{{ route('reports.flaged', ['id' =>  $report['plateNumber']]) }}" class="btn btn-sm btn-danger">{{ __('Flag') }}</a>
+                        <a href="{{ route('reports.flaged', ['id' =>  $report['plateNumber']]) }}" class="btn btn-sm btn-danger">{{ __('Flag the plate') }}</a>
                     </td>
                 </tr>
             @endforeach
@@ -37,18 +34,15 @@
                 <th>{{ __('Plate Nr.') }}</th>
                 <th>{{ __('Date') }}</th>
                 <th></th>
-                <th>{{ __('Flag the plate') }}</th>
             </tr>
 
             @foreach($readedReports as $id => $report)
                 <tr>
                     <td>{{ $report['plateNumber'] }}</td>
-                    <td></td>
+                    <td>{{ \Carbon\Carbon::createFromTimestampMs($report['timestamp'])->format('d M Y H:i:s') }}</td>
                     <td>
                         <a href="{{ route('reports.details', ['id' => $id]) }}" class="btn btn-sm btn-dark">{{ __('See details') }}</a>
-                    </td>
-                    <td>
-                        <a href="{{ route('reports.flaged', ['id' =>  $report['plateNumber']]) }}" class="btn btn-sm btn-danger">{{ __('Flag') }}</a>
+                        <a href="{{ route('reports.flaged', ['id' =>  $report['plateNumber']]) }}" class="btn btn-sm btn-danger">{{ __('Flag the plate') }}</a>
                     </td>
                 </tr>
             @endforeach

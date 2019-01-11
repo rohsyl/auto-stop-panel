@@ -15,7 +15,7 @@
                 <tr>
                     <td><a href="http://maps.google.com/maps?q={{ $alert['lastPosition']['latitude'] }},{{ $alert['lastPosition']['longitude'] }}" target="_blank">{{ $alert['lastPosition']['latitude'] }}, {{ $alert['lastPosition']['longitude'] }}</a></td>
 
-                    <td>{{ $alert['timestamp'] }}</td>
+                    <td>{{ \Carbon\Carbon::createFromTimestampMs($alert['timestamp'])->format('d M Y H:i:s') }}</td>
                     <td>
                         <a href="{{ route('alerts.details', ['id' => $id]) }}" class="btn btn-sm btn-dark">{{ __('See details') }}</a>
                     </td>
@@ -39,7 +39,7 @@
                 <tr>
                     <td><a href="http://maps.google.com/maps?q={{ $alert['lastPosition']['latitude'] }},{{ $alert['lastPosition']['longitude'] }}" target="_blank">{{ $alert['lastPosition']['latitude'] }}, {{ $alert['lastPosition']['longitude'] }}</a></td>
 
-                    <td>{{ $alert['timestamp'] }}</td>
+                    <td>{{ \Carbon\Carbon::createFromTimestampMs($alert['timestamp'])->format('d M Y H:i:s') }}</td>
                     <td>
                         <a href="{{ route('alerts.details', ['id' => $id]) }}" class="btn btn-sm btn-dark">{{ __('See details') }}</a>
                     </td>

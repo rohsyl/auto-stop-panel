@@ -7,19 +7,22 @@
 
         <a href="{{ route('alerts.readed', ['id' => $id]) }}" class="btn btn-warning">{{ __('Mark as read') }}</a>
         <a href="{{ route('trip.map', ['id' => $alert['tripUid']]) }}" class="btn btn-success">{{ __('See trip path') }}</a>
-        <a href="{{ route('alerts.flaged', ['id' => $alert['tripUid']]) }}" class="btn btn-danger">{{ __('Flag de plate') }}</a>
+        <a href="{{ route('alerts.flaged', ['id' => $alert['tripUid']]) }}" class="btn btn-danger">{{ __('Flag the plate') }}</a>
 
         <hr />
 
         <div class="row">
-            <div class="col">    <h3>Trip details</h3>
+            <div class="col">    <h3>Alert and Trip details</h3>
                 <dl class="dl-horizontal">
-                    <dt>Trip uid</dt>
-                    <dd>{{ $alert['tripUid'] }}</dd>
 
-                    <dt>Last known position</dt>
+                    <dt>Alert position</dt>
                     <dd><a href="http://maps.google.com/maps?q={{ $alert['lastPosition']['latitude'] }},{{ $alert['lastPosition']['longitude'] }}" target="_blank">Show in google maps</a></dd>
 
+                    <dt>Date</dt>
+                    <dd>{{ \Carbon\Carbon::createFromTimestampMs($alert['timestamp'])->format('d M Y H:i:s') }}</dd>
+
+                    <dt>Trip uid</dt>
+                    <dd>{{ $alert['tripUid'] }}</dd>
 
                     <dt>Trip destination</dt>
                     <dd><a href="http://maps.google.com/maps?q={{ $alert['trip']['destination']['latitude'] }},{{ $alert['trip']['destination']['longitude'] }}" target="_blank">{{ $alert['trip']['destination']['name'] }}</a></dd>

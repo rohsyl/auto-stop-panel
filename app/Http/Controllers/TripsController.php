@@ -3,16 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Firebase\FirebaseUtils;
-use Illuminate\Http\Request;
-use Kreait\Firebase\Factory;
-use Kreait\Firebase\ServiceAccount;
 
+/**
+ * Class TripsController
+ * @package App\Http\Controllers
+ */
 class TripsController extends AuthController
 {
+    /**
+     * TripsController constructor.
+     */
     public function __construct() {
         parent::__construct();
     }
 
+    /**
+     * This action display the trip path on a map
+     * @param null|int $id The id of the trop
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function map($id = null){
 
         return view('trips.map')->with([
@@ -31,17 +40,12 @@ class TripsController extends AuthController
 
     public function index(){
 
-        $firebase = FirebaseUtils::get();
-
-        $database = $firebase->getDatabase();
-
-        $references = $database
-            ->getReference('trips');
-
-        $trips = $references->getValue();
+        $trips = FirebaseUtils::get()
+            ->getDatabase()
+            ->getReference('trips')
+            ->getValue();
 
         print_r($trips);
         die();
-
     }
 }
